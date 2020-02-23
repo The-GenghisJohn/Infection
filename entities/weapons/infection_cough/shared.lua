@@ -153,5 +153,5 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:Deploy()
--- self.Weapon:EmitSound("smb_powerup.wav")
+-- self.Weapon:EmitSound("")
 end
