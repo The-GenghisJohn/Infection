@@ -1,0 +1,7 @@
+"tag"
+{
+	"title"		"Infection"
+	"base"		"base"
+	"maps"		"^mu_"
+	"menusystem"	"1"
+}
