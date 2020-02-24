@@ -11,7 +11,7 @@
 -----------------------------------------------------------]]
 
 
-include( 'player_class/player_default.lua' )
+include( 'player_class/player_healthy.lua' )
 include( 'player_class/player_infected.lua' )
 include( 'player_class/taunt_camera.lua' )
 
@@ -23,8 +23,12 @@ GM.TeamBased	= false
 
 resource.AddFile("sound/sneeze.wav")
 resource.AddFile("sound/cough.wav")
-resource.AddSingleFile("particles/cough.pcf")
-resource.AddSingleFile("particles_manifest.txt")
+resource.AddFile("particles/cough.pcf")
+
+if CLIENT then
+	game.AddParticles("particles/cough.pcf")
+end
+PrecacheParticleSystem("cough")
 
 
 --[[---------------------------------------------------------
@@ -53,26 +57,10 @@ end
    Desc: Prop has been broken
 -----------------------------------------------------------]]
 function GM:PropBreak( attacker, prop )
+	print(attacker:Nick().." Broke the ".. prop)
 end
 
---[[---------------------------------------------------------
-   Name: gamemode:PhysgunPickup( )
-   Desc: Return true if player can pickup entity
------------------------------------------------------------]]
-function GM:PhysgunPickup( ply, ent )
 
-	-- Don't pick up players
-	if ( ent:GetClass() == "player" ) then return false end
-
-	return true
-end
-
---[[---------------------------------------------------------
-   Name: gamemode:PhysgunDrop( )
-   Desc: Dropped an entity
------------------------------------------------------------]]
-function GM:PhysgunDrop( ply, ent )
-end
 
 --[[---------------------------------------------------------
    Name: Text to show in the server browser
@@ -124,33 +112,7 @@ end
 function GM:EntityKeyValue( ent, key, value )
 end
 
---[[---------------------------------------------------------
-   Name: gamemode:CreateTeams()
-   Desc: Note - HAS to be shared.
------------------------------------------------------------]]
-function GM:CreateTeams()
 
-	-- Don't do this if not teambased. But if it is teambased we
-	-- create a few teams here as an example. If you're making a teambased
-	-- gamemode you should override this function in your gamemode
-
-	if ( !GAMEMODE.TeamBased ) then return end
-
-	TEAM_BLUE = 1
-	team.SetUp( TEAM_BLUE, "Blue Team", Color( 0, 0, 255 ) )
-	team.SetSpawnPoint( TEAM_BLUE, "ai_hint" ) -- <-- This would be info_terrorist or some entity that is in your map
-
-	TEAM_ORANGE = 2
-	team.SetUp( TEAM_ORANGE, "Orange Team", Color( 255, 150, 0 ) )
-	team.SetSpawnPoint( TEAM_ORANGE, "sky_camera" ) -- <-- This would be info_terrorist or some entity that is in your map
-
-	TEAM_SEXY = 3
-	team.SetUp( TEAM_SEXY, "Sexy Team", Color( 255, 150, 150 ) )
-	team.SetSpawnPoint( TEAM_SEXY, "info_player_start" ) -- <-- This would be info_terrorist or some entity that is in your map
-
-	team.SetSpawnPoint( TEAM_SPECTATOR, "worldspawn" )
-
-end
 
 --[[---------------------------------------------------------
    Name: gamemode:ShouldCollide( Ent1, Ent2 )

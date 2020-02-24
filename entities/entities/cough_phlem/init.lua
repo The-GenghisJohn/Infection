@@ -1,7 +1,6 @@
+include("shared.lua")
 AddCSLuaFile("shared.lua")
 AddCSLuaFile("cl_init.lua")
-
-include("shared.lua")
 
 function ENT:Initialize()
   self:SetModel("models/props_phx/misc/egg.mdl")
@@ -45,16 +44,22 @@ function ENT:PhysicsCollide( data, physobj )
       player_manager.SetPlayerClass( ply, "player_infected" )
       local orig_pos = ply:GetPos()
       local orig_angle = ply:GetAimVector()
-      ply:Spawn()
-      ply:Freeze(true)
-      ply:SetEyeAngles((orig_angle):Angle())
-      ply:SetPos(orig_pos)
-      timer.Simple(4, function() ply:Freeze(false) end)
+      ply:CreateRagdoll()
+      ply:Remove()
+
+      timer.Simple(4, function()
+        ply:Spawn()
+        ply:SetEyeAngles((orig_angle):Angle())
+        ply:SetPos(orig_pos)
+        ply:Freeze(false)
+        local cleanrag = ply:GetRagdollEntity()
+        SafeRemoveEntity(cleanrag)
+      end)
 
 
       --set the infected to Default
       local ply = self.Owner
-      player_manager.SetPlayerClass( ply, "player_default" )
+      player_manager.SetPlayerClass( ply, "player_healthy" )
       local orig_pos = ply:GetPos()
       local orig_angle = ply:GetAimVector()
       ply:Spawn()

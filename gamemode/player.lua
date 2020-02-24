@@ -752,14 +752,7 @@ end
 	Desc: Can this player see the other player's chat?
 -----------------------------------------------------------]]
 function GM:PlayerCanSeePlayersChat( strText, bTeamOnly, pListener, pSpeaker )
-
-	if ( bTeamOnly ) then
-		if ( !IsValid( pSpeaker ) || !IsValid( pListener ) ) then return false end
-		if ( pListener:Team() != pSpeaker:Team() ) then return false end
-	end
-
 	return true
-
 end
 
 local sv_alltalk = GetConVar( "sv_alltalk" )
@@ -833,20 +826,9 @@ end
 function GM:PlayerButtonDown( ply, btn )
 
 	-- print(ply, btn)
-	if (btn == 19) then --f4
 
-		-- if SERVER then
-		-- 	player_manager.SetPlayerClass( ply, "player_infected" )
-		-- 	local orig_pos = ply:GetPos()
-		-- 	local orig_angle = ply:GetAngles()
-		-- 	local aim_vec = ply:GetAimVector()
-		-- 	ply:Spawn()
-		-- 	ply:SetEyeAngles((aim_vec):Angle())
-		-- 	ply:SetPos(orig_pos)
-		-- end
-
-	end
 	if (btn == 19) then --i
+		ply:CreateRagdoll()
 	-- 	if SERVER then
 	-- 		player_manager.SetPlayerClass( ply, "player_default" )
 	-- 		local orig_pos = ply:GetPos()
@@ -857,20 +839,4 @@ function GM:PlayerButtonDown( ply, btn )
 	-- 	end
 	end
 
-end
-
-
-function GM:PlayerButtonUp( ply, btn ) end
-
-concommand.Add( "changeteam", function( pl, cmd, args ) hook.Call( "PlayerRequestTeam", GAMEMODE, pl, tonumber( args[ 1 ] ) ) end )
-
-function doit()
-	if(!frame)then
-		local frame=vgui.Create("DFrame")
-		frame:SetSize(100,720)
-		frame:SetPos(100,100)
-		frame:SetVisable(true)
-		frame:MakePopup()
-		frame:SetDeleteOnClose(true)
-	end
 end

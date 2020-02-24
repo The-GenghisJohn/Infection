@@ -3,14 +3,14 @@ AddCSLuaFile()
 
 include( 'taunt_camera.lua' )
 
-DEBUG = true
+DEFINE_BASECLASS( "player_default" )
 
 local PLAYER = {}
 
-PLAYER.DisplayName			= "Default Class"
+PLAYER.DisplayName			= "Healthy"
 
-PLAYER.WalkSpeed			= 400		-- How fast to move when not running
-PLAYER.RunSpeed				= 600		-- How fast to move when running
+PLAYER.WalkSpeed			= 200		-- How fast to move when not running
+PLAYER.RunSpeed				= 400		-- How fast to move when running
 PLAYER.CrouchedWalkSpeed	= 0.3		-- Multiply move speed by this when crouching
 PLAYER.DuckSpeed			= 0.3		-- How fast to go from not ducking, to ducking
 PLAYER.UnDuckSpeed			= 0.3		-- How fast to go from ducking, to not ducking
@@ -21,7 +21,7 @@ PLAYER.StartHealth			= 100		-- How much health we start with
 PLAYER.StartArmor			= 0			-- How much armour we start with
 PLAYER.DropWeaponOnDie		= false		-- Do we drop our weapon when we die
 PLAYER.TeammateNoCollide	= true		-- Do we collide with teammates or run straight through them
-PLAYER.AvoidPlayers			= true		-- Automatically swerves around other players
+PLAYER.AvoidPlayers			= false		-- Automatically swerves around other players
 PLAYER.UseVMHands			= true		-- Uses viewmodel hands
 
 --
@@ -49,13 +49,8 @@ end
 -- Ret1:
 --
 function PLAYER:Spawn()
-	if DEBUG then
-		print("default spawn")
-	end
 	if SERVER then
-		for k, v in pairs( self.Player:GetWeapons() ) do
-			v:Remove()
-		end
+		self.Player:RemoveAllItems() 
 	end
 end
 
@@ -72,12 +67,10 @@ function PLAYER:Loadout()
 end
 
 function PLAYER:SetModel()
-
 	local cl_playermodel = self.Player:GetInfo( "cl_playermodel" )
 	local modelname = player_manager.TranslatePlayerModel( cl_playermodel )
 	util.PrecacheModel( modelname )
 	self.Player:SetModel( modelname )
-
 end
 
 -- Clientside only
@@ -90,36 +83,6 @@ function PLAYER:StartMove( cmd, mv ) end	-- Copies from the user command to the 
 function PLAYER:Move( mv ) end				-- Runs the move (can run multiple times for the same client)
 function PLAYER:FinishMove( mv ) end		-- Copy the results of the move back to the Player
 
---
--- Name: PLAYER:ViewModelChanged
--- Desc: Called when the player changes their weapon to another one causing their viewmodel model to change
--- Arg1: Entity|viewmodel|The viewmodel that is changing
--- Arg2: string|old|The old model
--- Arg3: string|new|The new model
--- Ret1:
---
-function PLAYER:ViewModelChanged( vm, old, new )
-end
-
---
--- Name: PLAYER:PreDrawViewmodel
--- Desc: Called before the viewmodel is being drawn (clientside)
--- Arg1: Entity|viewmodel|The viewmodel
--- Arg2: Entity|weapon|The weapon
--- Ret1:
---
-function PLAYER:PreDrawViewModel( vm, weapon )
-end
-
---
--- Name: PLAYER:PostDrawViewModel
--- Desc: Called after the viewmodel has been drawn (clientside)
--- Arg1: Entity|viewmodel|The viewmodel
--- Arg2: Entity|weapon|The weapon
--- Ret1:
---
-function PLAYER:PostDrawViewModel( vm, weapon )
-end
 
 --
 -- Name: PLAYER:GetHandsModel
@@ -136,4 +99,4 @@ function PLAYER:GetHandsModel()
 
 end
 
-player_manager.RegisterClass( "player_default", PLAYER, nil )
+player_manager.RegisterClass( "player_healthy", PLAYER, "player_default" )
